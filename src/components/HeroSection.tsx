@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-illustration.png";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+   const navigate = useNavigate();
   return (
     <section className="relative bg-gradient-subtle py-20 lg:py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,7 +37,7 @@ const HeroSection = () => {
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="demo" size="xl" className="group">
+              <Button variant="demo" size="xl" className="group" onClick={() => navigate("/new-session")}>
                 <Play className="h-5 w-5" />
                 Try Demo
               </Button>

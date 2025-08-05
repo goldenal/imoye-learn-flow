@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Check, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +67,7 @@ const ForgotPassword = () => {
                       Try different email
                     </Button>
                     
-                    <Link to="/login">
+                    <Link to="/login" onClick={() => navigate("/login")}>
                       <Button variant="ghost" className="w-full">
                         <ArrowLeft className="w-4 h-4 mr-2" />
                         Back to sign in

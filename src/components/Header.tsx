@@ -77,15 +77,16 @@ const Header = () => {
                 About
               </a>
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
-                <Button variant="demo" size="sm">
+                <Button variant="demo" size="sm" onClick={() => navigate("/new-session")}>
                   Try Demo
                 </Button>
-                <Button variant="ghost" size="sm">
-                  Log In
-                </Button>
-                <Button variant="hero" size="sm">
-                  Sign Up
-                </Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate("/login")}
+>
+              Log In
+            </Button>
+            <Button variant="hero" size="sm" onClick={() => navigate("/signup")}>
+              Sign Up
+            </Button>
               </div>
             </div>
           </div>
