@@ -1,7 +1,9 @@
 import { BookOpen, Mail, Twitter, Github, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+   const navigate = useNavigate();
   return (
     <footer className="bg-foreground text-background py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +44,7 @@ const Footer = () => {
               <li><a href="#features" className="hover:text-background transition-colors">Features</a></li>
               <li><a href="#courses" className="hover:text-background transition-colors">Courses</a></li>
               <li><a href="#pricing" className="hover:text-background transition-colors">Pricing</a></li>
-              <li><a href="#demo" className="hover:text-background transition-colors">Try Demo</a></li>
+              <li><a href="#demo" className="hover:text-background transition-colors" onClick={() => navigate("/new-session")}>Try Demo</a></li>
             </ul>
           </div>
 
