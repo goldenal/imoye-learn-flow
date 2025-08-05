@@ -9,6 +9,9 @@ import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import Onboarding from "./pages/Onboarding";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import CreateSession from "./pages/CreateSession";
+import Session from "./pages/Session";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +29,10 @@ const App = () => (
           <Route path="/onboarding" element={<Onboarding />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
+
+           <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/new-session" element={<CreateSession />} />
+              <Route path="/session/:id" element={<Session />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
