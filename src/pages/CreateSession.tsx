@@ -428,7 +428,7 @@ const CreateSession = () => {
     try {
       if (!isSessionTitleValid()) return;
       let corpusResp = await createCorpus();
-      if ( corpusResp.corpus_name) {
+      if (corpusResp.corpus_name) {
         let uploadResp = null;
         if (contentType === "file") {
           uploadResp = await uploadDocument(corpusResp.corpus_name);
