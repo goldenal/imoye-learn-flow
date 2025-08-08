@@ -602,7 +602,7 @@ const Session = () => {
           <div className="p-4 border-t border-border bg-white/40 space-y-2">
             <Button className="w-full">
               <Save className="w-4 h-4 mr-2" />
-              Save Session
+              Update Session
             </Button>
             <div className="grid grid-cols-2 gap-2">
               <Button variant="outline" size="sm" className="bg-white/50">
