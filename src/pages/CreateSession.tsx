@@ -1,6 +1,6 @@
 
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCreateSessionLogic, SessionData } from "./CreateSessionLogic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,22 +20,35 @@ import {
   Settings,
   Eye
 } from "lucide-react";
+import { useState } from "react";
 
 const CreateSession = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [contentType, setContentType] = useState<"file" | "url" | "text" | null>(null);
-  const [sessionData, setSessionData] = useState({
+
+  const {
+    sessionData,
+    setSessionData,
+    loading,
+    error,
+    handleFileChange,
+    isSessionTitleValid,
+    isFileValid,
+    createCorpus,
+    uploadDocument,
+    handlePersonalisationChange
+  } = useCreateSessionLogic({
     title: "",
     description: "",
-    tags: [] as string[],
+    tags: [],
     goal: "",
     role: "",
-    focusAreas: [] as string[],
-    difficulty: "intermediate" as "beginner" | "intermediate" | "advanced",
+    focusAreas: [],
+    difficulty: "intermediate",
     content: "",
     url: "",
-    file: null as File | null
+    file: null
   });
 
   const steps = [
@@ -152,17 +165,29 @@ const CreateSession = () => {
             </div>
 
             {contentType === 'file' && (
-              <div className="border-2 border-dashed border-primary/30 rounded-lg p-8 text-center bg-primary/5">
-                <Upload className="w-12 h-12 mx-auto mb-4 text-primary" />
-                <h4 className="font-medium mb-2">Drop your file here</h4>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Supports PDF, DOCX, TXT files up to 10MB
-                </p>
-                <Button variant="outline">
-                  Browse Files
-                </Button>
-              </div>
-            )}
+  <div className="border-2 border-dashed border-primary/30 rounded-lg p-8 text-center bg-primary/5">
+    <Upload className="w-12 h-12 mx-auto mb-4 text-primary" />
+    <h4 className="font-medium mb-2">Drop your file here</h4>
+    <p className="text-sm text-muted-foreground mb-4">
+      Supports PDF, DOCX, TXT, Sheets, Slides up to 10MB
+    </p>
+    <input
+      type="file"
+      accept=".pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint"
+      style={{ display: 'none' }}
+      id="file-upload-input"
+      onChange={handleFileChange}
+    />
+    <label htmlFor="file-upload-input">
+      <Button asChild variant="outline">
+        <span>Browse Files</span>
+      </Button>
+    </label>
+    {sessionData.file && (
+      <div className="mt-2 text-xs text-green-700">Selected: {sessionData.file.name}</div>
+    )}
+  </div>
+)}
 
             {contentType === 'url' && (
               <div className="space-y-4">
@@ -216,10 +241,14 @@ const CreateSession = () => {
               <div>
                 <label className="block text-sm font-medium mb-2">Session Title</label>
                 <Input 
-                  placeholder="Auto-generated from content or enter custom title"
-                  value={sessionData.title}
-                  onChange={(e) => setSessionData({...sessionData, title: e.target.value})}
-                />
+  placeholder="Auto-generated from content or enter custom title"
+  value={sessionData.title}
+  onChange={(e) => setSessionData({ ...sessionData, title: e.target.value })}
+  required
+/>
+{!isSessionTitleValid() && (
+  <div className="text-xs text-red-600 mt-1">Session title is required.</div>
+)}
               </div>
 
               <div>
@@ -391,14 +420,33 @@ const CreateSession = () => {
             </Card>
 
             <div className="text-center pt-4">
-              <Button 
-                size="lg" 
-                className="bg-gradient-primary hover:opacity-90 text-white px-8"
-                onClick={() => navigate('/session/123')}
-              >
-                Start Learning Session
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+              <Button
+  size="lg"
+  className="bg-gradient-primary hover:opacity-90 text-white px-8"
+  disabled={loading !== null || !isSessionTitleValid() || (contentType === 'file' && !isFileValid())}
+  onClick={async () => {
+    try {
+      if (!isSessionTitleValid()) return;
+      let corpusResp = await createCorpus();
+      if ( corpusResp.corpus_name) {
+        let uploadResp = null;
+        if (contentType === "file") {
+          uploadResp = await uploadDocument(corpusResp.corpus_name);
+        }
+        // Use display_name from corpusResp for navigation
+        navigate(`/session/${corpusResp.display_name}`);
+      }
+    } catch (err) {
+      // Optionally handle error (already set in hook)
+    }
+  }}
+>
+  {loading === "creating" && <span>Creating session...</span>}
+  {loading === "finalising" && <span>Finalising...</span>}
+  {loading === null && <span>Start Learning Session</span>}
+  <ArrowRight className="w-4 h-4 ml-2" />
+</Button>
+{error && <div className="text-xs text-red-600 mt-2">{error}</div>}
             </div>
           </div>
         );
